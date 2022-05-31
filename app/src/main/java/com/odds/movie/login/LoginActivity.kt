@@ -5,49 +5,51 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.odds.movie.HomeMovieActivity
-import com.odds.movie.movie.MovieActivity
 import com.odds.movie.databinding.ActivityLoginBinding
 import com.odds.movie.delay
+import com.odds.movie.movie.MovieActivity
+import kotlinx.coroutines.Dispatchers
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), LoginPresenter.LoginView {
 
-	private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setContentView(binding.root)
-
-		binding.buttonSubmit.setOnClickListener {
-			val user = createUser()
-			delay(
-				beforeDelay = { binding.progressBar.isVisible = true },
-				afterDelay = {
-					binding.progressBar.isVisible = false
-					login(user)
-				})
-		}
-	}
+    private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
+    private val presenter by lazy { LoginPresenter(Dispatchers.Main, 2000) }
 
 
-	private fun login(user: User) {
-		if (user.username == "admin" && user.password == "admin") {
-			val intent = Intent(this, MovieActivity::class.java)
-			intent.putExtra(MovieActivity.EXTRA_USER, user)
-			startActivity(intent)
-		} else {
-			Toast.makeText(
-				this,
-				"I think your username and password is admin",
-				Toast.LENGTH_LONG
-			).show()
-		}
-	}
 
-	private fun createUser(): User {
-		val username = binding.editTextUsername.text.toString()
-		val password = binding.editTextPassword.text.toString()
-		return User(username, password)
-	}
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+
+        presenter.attachView(this)
+
+        binding.buttonSubmit.setOnClickListener {
+            val username = binding.editTextUsername.text.toString()
+            val password = binding.editTextPassword.text.toString()
+            presenter.login(username, password)
+        }
+    }
+
+    override fun goToMovieScreen(user: User) {
+        val intent = Intent(this, MovieActivity::class.java)
+        intent.putExtra(MovieActivity.EXTRA_USER, user)
+        startActivity(intent)
+    }
+
+    override fun showToastMessage() {
+        Toast.makeText(
+            this,
+            "I think your username and password is admin",
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    override fun showProgressBar() {
+        binding.progressBar.isVisible = true
+    }
+
+    override fun hideProgressBar() {
+        binding.progressBar.isVisible = false
+    }
 
 }
