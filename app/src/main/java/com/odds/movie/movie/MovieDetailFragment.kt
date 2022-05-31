@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.odds.movie.databinding.FragmentMovieDetailBinding
 import com.odds.movie.login.User
 
@@ -31,7 +32,9 @@ class MovieDetailFragment : Fragment() {
             tvMovieName.text = movie?.name.orEmpty()
             tvDuration.text = getString(com.odds.movie.R.string.duration).format(movie?.duration)
             tvGreeting.text = getString(com.odds.movie.R.string.greeting).format(user?.username.orEmpty())
-            imageView.setImageResource(movie?.image?: com.odds.movie.R.drawable.endgame)
+            Glide.with(binding.imageView).load(movie?.image).into(binding.imageView)
+            textView2.text = movie?.description
+//            imageView.setImageResource(movie?.image?: com.odds.movie.R.drawable.endgame)
         }
     }
 

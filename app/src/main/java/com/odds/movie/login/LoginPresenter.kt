@@ -1,9 +1,16 @@
 package com.odds.movie.login
 
+import com.odds.movie.data.SharePreferenceLocalStorage
 import kotlinx.coroutines.*
 import java.time.Duration
 
-class LoginPresenter constructor(private val dispatcher: CoroutineDispatcher, private val duration: Long) {
+class LoginPresenter constructor(
+    private val dispatcher: CoroutineDispatcher,
+    private val duration: Long,
+    private val localStorage: SharePreferenceLocalStorage
+
+    ) {
+
 
         //loose coupling, hight
         private lateinit var view:  LoginView
@@ -27,6 +34,7 @@ class LoginPresenter constructor(private val dispatcher: CoroutineDispatcher, pr
 
         if (username == "admin" && password == "admin") {
             val user = User(username, password)
+            localStorage.insert(username)
             view.goToMovieScreen(user)
         } else {
             view.showToastMessage()

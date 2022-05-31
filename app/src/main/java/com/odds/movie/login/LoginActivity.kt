@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.odds.movie.data.SharePreferenceLocalStorage
 import com.odds.movie.databinding.ActivityLoginBinding
 import com.odds.movie.delay
 import com.odds.movie.movie.MovieActivity
@@ -13,7 +14,12 @@ import kotlinx.coroutines.Dispatchers
 class LoginActivity : AppCompatActivity(), LoginPresenter.LoginView {
 
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
-    private val presenter by lazy { LoginPresenter(Dispatchers.Main, 2000) }
+    private val presenter by lazy {
+        LoginPresenter(
+            Dispatchers.Main, 2000,
+            SharePreferenceLocalStorage(this)
+        ) }
+
 
 
 

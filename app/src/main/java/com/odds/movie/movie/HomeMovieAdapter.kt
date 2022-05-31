@@ -3,6 +3,7 @@ package com.odds.movie.movie
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.odds.movie.R
 import com.odds.movie.databinding.MovieItemRowBinding
 
@@ -11,10 +12,18 @@ class HomeMovieAdapter(val movies: List<Movie>,val onClickMovie: (Movie)-> Unit)
 
 
     class HomeMovieViewMolder(
+
         private val binding: MovieItemRowBinding) :
+
         RecyclerView.ViewHolder(binding.root) {
+
             fun bind(movie: Movie, onClickMovie: (Movie) -> Unit) {
-                binding.imageMovie.setImageResource(movie.image?: R.drawable.endgame)
+                Glide.with(binding.imageMovie)
+                    .load(movie.image)
+                    .error(R.drawable.endgame)
+                    .into(binding.imageMovie)
+
+
                 binding.tvMovieName.text = movie.name
                 binding.root.setOnClickListener{onClickMovie(movie)}
             }
